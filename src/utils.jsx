@@ -8,7 +8,7 @@ import {Buffer} from "buffer";
 
 const rosettaApi = new RosettaApi();
 
-const principalToAccountAddress = (p) => {
+const principalToAccountAddress = (p, s) => {
   const padding = Buffer("\x0Aaccount-id");
   const array = new Uint8Array([
       ...padding,

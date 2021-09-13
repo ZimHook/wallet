@@ -29,7 +29,7 @@ const App = () => {
     var principal_id = identity.getPrincipal().toText();    //获取用户的Principal
     console.log(principal_id);
     setPrincipalString(principal_id);
-    var icpBalance = await rosettaApi.getAccountBalance(principalToAccountAddress(principal_id));   //获取用户的ICP余额
+    var icpBalance = await rosettaApi.getAccountBalance(principalToAccountAddress(principal_id, 0));   //获取用户的ICP余额
     var icpBalanceString = icpBalance.toString();   
     console.log(icpBalanceString);
     setBalance(icpBalanceString);
@@ -48,7 +48,7 @@ const App = () => {
       canisterId: "ryjl3-tyaaa-aaaaa-aaaba-cai",
     });
     
-    var args = {'account' : principalToAccountAddress(principal_id)};
+    var args = {'account' : principalToAccountAddress(principal_id, 0)};
     var test = await ledgerAuthActor.account_balance_dfx(args);
     console.log(test);
 
@@ -101,7 +101,7 @@ const App = () => {
         <h2>
           principal : {isLogin ? principalString : 'not logged in'}
           <br/> 
-          address : {isLogin ? principalToAccountAddress(principalString) : 'not logged in'}
+          address : {isLogin ? principalToAccountAddress(principalString, 0) : 'not logged in'}
           <br/> 
           ICP balance : {isLogin ? balance : 'not logged in'}
         </h2>
