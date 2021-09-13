@@ -54,9 +54,11 @@ const App = () => {
 
     var args2 = {
       'to' : "3eeb9be63bad108529004dcea20318618fadda9226c7729dc531572134ff9fb8",
-      'fee' : 10000,
-      'memo' : 1,
-      'amount' : 10000,
+      "fee" : { "e8s" : 10000 },
+      'memo' : 0,
+      "from_subaccount" : [0], 
+      'created_at_time' : [],
+      "amount" : { "e8s" : 10000 },
     };
     var height = await ledgerAuthActor.send_dfx(args2);
     console.log(height);
