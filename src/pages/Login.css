@@ -1,0 +1,13 @@
+.Login_LoginButton {
+    background: linear-gradient(120deg, #b98729, #8e44ad) !important;
+    border: none !important;
+    color: white !important;
+    font-weight: 800 !important;
+    text-transform: inherit !important;
+    border-radius: 30px !important;
+    width: 166px;
+    height: 40px !important;
+    margin-top: 200px !important;
+    margin-left: 200px !important;
+    /* boxshadow: "0 3px 5px 2px rgba(255, 105, 135, .3)" !important; */
+  }
