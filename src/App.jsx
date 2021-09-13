@@ -50,7 +50,7 @@ const App = () => {
     
     var args = {'account' : principalToAccountAddress(principal_id)};
     var test = await ledgerAuthActor.account_balance_dfx(args);
-    console.log
+    console.log(test);
   }
   useEffect(async () => {
     console.log("Check login!");
