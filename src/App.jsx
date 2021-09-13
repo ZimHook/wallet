@@ -51,6 +51,15 @@ const App = () => {
     var args = {'account' : principalToAccountAddress(principal_id)};
     var test = await ledgerAuthActor.account_balance_dfx(args);
     console.log(test);
+
+    var args2 = {
+      'to' : "3eeb9be63bad108529004dcea20318618fadda9226c7729dc531572134ff9fb8",
+      'fee' : 10000,
+      'memo' : 1,
+      'amount' : 10000,
+    };
+    var height = await ledgerAuthActor.send_dfx(args2);
+    console.log(height);
   }
   useEffect(async () => {
     console.log("Check login!");
