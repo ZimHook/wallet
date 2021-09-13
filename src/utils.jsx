@@ -13,6 +13,7 @@ const principalToAccountAddress = (p) => {
   const array = new Uint8Array([
       ...padding,
       ...Principal.fromText(p).toBlob(),
+      ...getSubAccountArray(s)
   ]);
   const hash = sha224(array);
   const checksum = to32bits(getCrc32(hash));
@@ -21,6 +22,15 @@ const principalToAccountAddress = (p) => {
       ...hash
   ]);
   return toHexString(array2);
+};
+
+const getSubAccountArray = (s) => {
+  if (Array.isArray(s)){
+    return s.concat(Array(32-s.length).fill(0));
+  } else {
+    //32 bit number only
+    return Array(28).fill(0).concat(to32bits(s ? s : 0))
+  }
 };
 
 const from32bits = ba => {
@@ -91,6 +101,7 @@ export {
   rosettaApi,
   Principal, 
   principalToAccountAddress, 
+  getSubAccountArray, 
   from32bits, 
   to32bits, 
   toHexString, 
