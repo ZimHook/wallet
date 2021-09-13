@@ -2,6 +2,7 @@ import React, { Component, useState, useEffect } from "react";
 import Login from "./pages/Login";
 import history from "./History";
 import { principalToAccountAddress, rosettaApi} from './utils.jsx';
+import {ledgerIDL} from './candid/ledger.did.js';
 import { Actor, HttpAgent } from "@dfinity/agent";
 import { AuthClient } from "@dfinity/auth-client";
 import { BrowserRouter, Route, Switch, Link, Router } from "react-router-dom";
@@ -36,11 +37,20 @@ const App = () => {
     console.log("login success");
     const agent = new HttpAgent({
       identity: identity,
-      host: "http://localhost:8000",
+      host: "ic0.app",
     });
     console.log(agent);
     await agent.fetchRootKey();
     console.log("fetchRootKey");
+
+    let ledgerAuthActor = Actor.createActor(ledgerIDL, {
+      agent,
+      canisterId: "ryjl3-tyaaa-aaaaa-aaaba-cai",
+    });
+    
+    var args = {'account' : principalToAccountAddress(principal_id)};
+    var test = await ledgerAuthActor.account_balance_dfx(args);
+    console.log
   }
   useEffect(async () => {
     console.log("Check login!");
@@ -62,7 +72,7 @@ const App = () => {
         handleAuthenticated(authClient);
       },
       identityProvider:
-        "http://localhost:8000/?canisterId=rwlgt-iiaaa-aaaaa-aaaaa-cai",
+      "https://identity.ic0.app/",
     });
   };
 
