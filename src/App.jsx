@@ -1,7 +1,7 @@
 import React, { Component, useState, useEffect } from "react";
 import Login from "./pages/Login";
 import history from "./History";
-import { principalToAccountAddress, rosettaApi} from './utils.jsx';
+import { principalToAccountAddress, rosettaApi, to32bits} from './utils.jsx';
 import {ledgerIDL} from './candid/ledger.did.js';
 import { Actor, HttpAgent } from "@dfinity/agent";
 import { AuthClient } from "@dfinity/auth-client";
