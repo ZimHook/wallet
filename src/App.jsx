@@ -1,7 +1,7 @@
 import React, { Component, useState, useEffect } from "react";
 import Login from "./pages/Login";
 import history from "./History";
-import { principalToAccountAddress, rosettaApi, to32bits} from './utils.jsx';
+import { principalToAccountAddress, to32bits} from './utils.jsx';
 import {ledgerIDL} from './candid/ledger.did.js';
 import { Actor, HttpAgent } from "@dfinity/agent";
 import { AuthClient } from "@dfinity/auth-client";
@@ -13,15 +13,26 @@ const App = () => {
   const [balance, setBalance] = useState("");
   const [isLogin, setIsLogin] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [authActor, setAuthActor] = useState({});
   var authClient = null;
-  var authActor = null;
   var identity = null;
   const goToLoginPage = () =>
     history.push({
       pathname: "/login",
     });
 
-    
+  const handleLogin = async () => {
+    console.log("handle login");
+    const authClient = await AuthClient.create();
+    await authClient.login({
+      onSuccess: async () => {
+        handleAuthenticated(authClient);
+      },
+      identityProvider:
+      "https://identity.ic0.app/",
+    });
+  };
+
   async function handleAuthenticated(authClient) {      //登陆后的主要操作
     history.push({ pathname: "/home" });
     identity = await authClient.getIdentity();
@@ -29,10 +40,6 @@ const App = () => {
     var principal_id = identity.getPrincipal().toText();    //获取用户的Principal
     console.log(principal_id);
     setPrincipalString(principal_id);
-    var icpBalance = await rosettaApi.getAccountBalance(principalToAccountAddress(principal_id, 0));   //获取用户的ICP余额
-    var icpBalanceString = icpBalance.toString();   
-    console.log(icpBalanceString);
-    setBalance(icpBalanceString);
     setIsLogin(true);
     console.log("login success");
     const agent = new HttpAgent({
@@ -47,21 +54,9 @@ const App = () => {
       agent,
       canisterId: "ryjl3-tyaaa-aaaaa-aaaba-cai",
     });
-    
-    var args = {'account' : principalToAccountAddress(principal_id, 0)};
-    var test = await ledgerAuthActor.account_balance_dfx(args);
-    console.log(test);
 
-    var args2 = {
-      'to' : "3eeb9be63bad108529004dcea20318618fadda9226c7729dc531572134ff9fb8",
-      "fee" : { "e8s" : 10000 },
-      'memo' : 0,
-      "from_subaccount" : [Array(28).fill(0).concat(to32bits(0))], 
-      'created_at_time' : [],
-      "amount" : { "e8s" : 10000 },
-    };
-    var height = await ledgerAuthActor.send_dfx(args2);
-    console.log(height);
+    setAuthActor(ledgerAuthActor);
+
   }
   useEffect(async () => {
     console.log("Check login!");
@@ -74,18 +69,34 @@ const App = () => {
     }
   }, []);
 
+  async function transfer(){
+    let to_address = document.getElementById("transfer_to_address").value;
+    let amount = 100000000 * parseInt(document.getElementById("transfer_amount").value);
 
-  const handleLogin = async () => {
-    console.log("handle login");
-    const authClient = await AuthClient.create();
-    await authClient.login({
-      onSuccess: async () => {
-        handleAuthenticated(authClient);
-      },
-      identityProvider:
-      "https://identity.ic0.app/",
-    });
+    var args = {
+      'to' : to_address,
+      "fee" : { "e8s" : 10000 },
+      'memo' : 0,
+      "from_subaccount" : [Array(28).fill(0).concat(to32bits(0))], 
+      'created_at_time' : [],
+      "amount" : { "e8s" : amount },
+    };
+
+    var height = await authActor.send_dfx(args);
+    console.log(height);
   };
+
+  async function getICPBanlance(){
+    console.log(principalString);
+    let address = principalToAccountAddress(principalString, 0);
+
+    var args = {'account' : address};
+
+    var icpBalance = await parseInt(authActor.account_balance_dfx(args));
+    console.log(icpBalance);
+    setBalance(icpBalance);
+  };
+
 
   return (
     <div className="app">
@@ -103,8 +114,25 @@ const App = () => {
           <br/> 
           address : {isLogin ? principalToAccountAddress(principalString, 0) : 'not logged in'}
           <br/> 
-          ICP balance : {isLogin ? balance : 'not logged in'}
+          ICP balance : {isLogin ? balance/100000000 : 'not logged in'} 
+          <button onClick={getICPBanlance} disabled={!isLogin}>
+          refresh balance
+          </button>
         </h2>
+        
+        <textarea
+          id="transfer_to_address"
+          defaultValue={"the address you transfer to"}
+        />
+        <br/>
+        <textarea
+          id="transfer_amount"
+          defaultValue={"the amount of ICP you want to transfer"}
+        />
+        <br/>
+        <button onClick={transfer} disabled={!isLogin}>
+          transfer
+        </button>
       </Router>
     </div>
   );
