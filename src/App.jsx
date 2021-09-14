@@ -89,10 +89,10 @@ const App = () => {
   async function getICPBanlance(){
     console.log(principalString);
     let address = principalToAccountAddress(principalString, 0);
-
+    console.log(address);
     var args = {'account' : address};
 
-    var icpBalance = await parseInt(authActor.account_balance_dfx(args));
+    var icpBalance = await authActor.account_balance_dfx(args);
     console.log(icpBalance);
     setBalance(icpBalance);
   };
