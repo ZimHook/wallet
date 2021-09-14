@@ -94,7 +94,10 @@ const App = () => {
 
     var icpBalance = await authActor.account_balance_dfx(args);
     console.log(icpBalance);
-    setBalance(icpBalance);
+    console.log(icpBalance.e8s);
+    var numICPBalance = parseInt(icpBalance.e8s);
+    console.log(numICPBalance);
+    setBalance(numICPBalance);
   };
 
 
