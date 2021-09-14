@@ -1,12 +1,8 @@
-/* global BigInt */
 import { Principal } from "@dfinity/agent";  
 import { Ed25519KeyIdentity } from "@dfinity/identity";
 import { getCrc32 } from '@dfinity/agent/lib/esm/utils/getCrc';
 import { sha224 } from '@dfinity/agent/lib/esm/utils/sha224';
-import RosettaApi from './RosettaApi.js';
 import {Buffer} from "buffer";
-
-const rosettaApi = new RosettaApi();
 
 const principalToAccountAddress = (p, s) => {
   const padding = Buffer("\x0Aaccount-id");
@@ -40,65 +36,27 @@ const from32bits = ba => {
   }
   return value;
 }
+
 const to32bits = num => {
   let b = new ArrayBuffer(4);
   new DataView(b).setUint32(0, num);
   return Array.from(new Uint8Array(b));
 }
+
 const toHexString = (byteArray)  =>{
   return Array.from(byteArray, function(byte) {
     return ('0' + (byte & 0xFF).toString(16)).slice(-2);
   }).join('')
 }
+
 const fromHexString = (hex) => {
   if (hex.substr(0,2) == "0x") hex = hex.substr(2);
   for (var bytes = [], c = 0; c < hex.length; c += 2)
   bytes.push(parseInt(hex.substr(c, 2), 16));
   return bytes;
 }
-const mnemonicToId = (mnemonic) => {
-  var seed = bip39.mnemonicToSeedSync(mnemonic);
-  seed = Array.from(seed);
-  seed = seed.splice(0, 32);
-  seed = new Uint8Array(seed);
-  return Ed25519KeyIdentity.generate(seed);
-}
-const encrypt = (mnemonic, principal, password) => {
-  return new Promise((resolve, reject) => {
-    pbkdf2.pbkdf2(password, principal, 30000, 512, 'sha512', (e, d) => {
-      if (e) return reject(e);
-      resolve(sjcl.encrypt(d.toString(), btoa(mnemonic)));
-    });
-  });
-}
-const decrypt = (data, principal, password) => {
-  return new Promise((resolve, reject) => {
-    pbkdf2.pbkdf2(password, principal, 30000, 512, 'sha512', (e, d) => {
-      if (e) return reject(e);
-      try{
-        resolve(atob(sjcl.decrypt(d.toString(), data)));
-      } catch (e) {
-        reject(e);
-      }
-    });
-  });
-}
-const isHex = (h) => {
-  var regexp = /^[0-9a-fA-F]+$/;
-  return regexp.test(h);
-};
-const validateAddress = (a) => {
-  return (isHex(a) && a.length == 64)
-}
-const validatePrincipal = (p) => {
-  try {
-    return (p == Principal.fromText(p).toText());
-  } catch (e) {
-    return false;
-  }
-}
+
 export { 
-  rosettaApi,
   Principal, 
   principalToAccountAddress, 
   getSubAccountArray, 
@@ -106,9 +64,4 @@ export {
   to32bits, 
   toHexString, 
   fromHexString, 
-  mnemonicToId, 
-  encrypt, 
-  decrypt, 
-  isHex,
-  validateAddress,
-  validatePrincipal  };
+  };
