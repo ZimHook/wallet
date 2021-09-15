@@ -71,8 +71,9 @@ const App = () => {
 
   async function transfer(){
     let to_address = document.getElementById("transfer_to_address").value;
-    let amount = 100000000 * parseInt(document.getElementById("transfer_amount").value);
-
+    let amount = 100000000 * parseFloat(document.getElementById("transfer_amount").value);
+    console.log(amount);
+    console.log( parseInt(document.getElementById("transfer_amount").value));
     var args = {
       'to' : to_address,
       "fee" : { "e8s" : 10000 },
