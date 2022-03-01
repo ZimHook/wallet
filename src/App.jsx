@@ -6,6 +6,7 @@ import {ledgerIDL} from './candid/ledger.did.js';
 import { Actor, HttpAgent } from "@dfinity/agent";
 import { AuthClient } from "@dfinity/auth-client";
 import { BrowserRouter, Route, Switch, Link, Router } from "react-router-dom";
+import { icp2usd } from "./pages/conv";
 import "./App.css";
 
 const App = () => {
@@ -87,6 +88,12 @@ const App = () => {
     console.log(height);
   };
 
+  async function conv(){
+    console.log('query')
+    const e = await icp2usd();
+    console.log(e)
+  };
+
   async function getICPBanlance(){
     console.log(principalString);
     let address = principalToAccountAddress(principalString, 0);
@@ -136,6 +143,9 @@ const App = () => {
         <br/>
         <button onClick={transfer} disabled={!isLogin}>
           transfer
+        </button>
+        <button onClick={conv}>
+          conv
         </button>
       </Router>
     </div>
