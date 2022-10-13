@@ -1,0 +1,24 @@
+{
+  "canisters": {
+    "test": {
+      "type": "assets",
+      "source": [
+        "dist",
+        "dist/.well-known"
+      ],
+      "frontend": {
+        "entrypoint": "dist/index.html"
+      }
+    }
+  },
+  "defaults": {
+  },
+  "dfx": "0.8.4",
+  "networks": {
+    "local": {
+      "bind": "0.0.0.0:8888",
+      "type": "ephemeral"
+    }
+  },
+  "version": 1
+}

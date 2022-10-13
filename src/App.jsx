@@ -10,6 +10,7 @@ import { icp2usd } from "./pages/conv";
 import "./App.css";
 
 const App = () => {
+  console.log(JSON.stringify({alternativeOrigins: ["http://localhost:3000"]}))
   const [principalString, setPrincipalString] = useState("");
   const [balance, setBalance] = useState("");
   const [isLogin, setIsLogin] = useState(false);
@@ -26,6 +27,7 @@ const App = () => {
     console.log("handle login");
     const authClient = await AuthClient.create();
     await authClient.login({
+      derivationOrigin: "https://e2zec-lyaaa-aaaah-abnya-cai.raw.ic0.app",
       onSuccess: async () => {
         handleAuthenticated(authClient);
       },

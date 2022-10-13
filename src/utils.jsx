@@ -1,23 +1,16 @@
-import { Principal } from "@dfinity/agent";  
+import { Principal } from "@dfinity/principal";  
 import { Ed25519KeyIdentity } from "@dfinity/identity";
-import { getCrc32 } from '@dfinity/agent/lib/esm/utils/getCrc';
-import { sha224 } from '@dfinity/agent/lib/esm/utils/sha224';
+import { getCrc32 } from './crc';
+import { sha224 } from './sha224';
 import {Buffer} from "buffer";
 
 const principalToAccountAddress = (p, s) => {
-  const padding = Buffer("\x0Aaccount-id");
-  const array = new Uint8Array([
-      ...padding,
-      ...Principal.fromText(p).toBlob(),
-      ...getSubAccountArray(s)
-  ]);
-  const hash = sha224(array);
-  const checksum = to32bits(getCrc32(hash));
-  const array2 = new Uint8Array([
-      ...checksum,
-      ...hash
-  ]);
-  return toHexString(array2);
+  const padding = new Buffer('\x0Aaccount-id')
+  const array = new Uint8Array([...padding, ...Principal.fromText(p).toUint8Array(), ...getSubAccountArray(s)])
+  const hash = sha224(array)
+  const checksum = to32bits(getCrc32(hash))
+  const array2 = new Uint8Array([...checksum, ...hash])
+  return toHexString(array2)
 };
 
 const getSubAccountArray = (s) => {
